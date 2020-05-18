@@ -33,11 +33,17 @@ public class CMainPanel extends JPanel {
         addNewTab(); // open new empty tab when user open the application
     }
 
+    /**
+     * creat tabbedPane and set layout
+     */
     private void initTabbedPane() {
         tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
     }
 
+    /**
+     * creat
+     */
     private void initDirectoryList() {
         File[] files = FileUtils.getFilesInDirectory();
         directoryList = new JList<>(files);
@@ -56,12 +62,20 @@ public class CMainPanel extends JPanel {
     }
 
 
+    /**
+     * Add a new tab
+     */
     public void addNewTab() {
         JTextArea textPanel = createTextPanel();
         textPanel.setText("Write Something here...");
         tabbedPane.addTab("Tab " + (tabbedPane.getTabCount() + 1), textPanel);
     }
 
+    /**
+     * creat
+     *
+     * @param content
+     */
     public void openExistingNote(String content) {
         JTextArea existPanel = createTextPanel();
         existPanel.setText(content);
@@ -74,24 +88,36 @@ public class CMainPanel extends JPanel {
     public void saveNote() throws IOException {
         JTextArea textPanel = (JTextArea) tabbedPane.getSelectedComponent();
         String note = textPanel.getText();
-        if (!note.isEmpty()) {
-            FileUtils.fileWriter(note);
+        if (!note.isEmpty()) {  //3 methods is available - uncomment them
+            // FileUtils.fileWriter(note);
+            // FileUtils.fileWriter2(note);
+            FileUtils.writeObject(note);
+            // ----------------------------------------------------------------------------------------------------------
         }
         updateListGUI();
     }
 
+    /**
+     * @return
+     */
     private JTextArea createTextPanel() {
         JTextArea textPanel = new JTextArea();
         textPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         return textPanel;
     }
 
+    /**
+     * Update GUI - JList
+     */
     private void updateListGUI() {
         File[] newFiles = FileUtils.getFilesInDirectory();
         directoryList.setListData(newFiles);
     }
 
 
+    /**
+     * Control Mouse event on jList
+     */
     private class MyMouseAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent eve) {
@@ -102,8 +128,11 @@ public class CMainPanel extends JPanel {
                 //TODO: Phase1: Click on file is handled... Just load content into JTextArea :done
                 File curr[] = FileUtils.getFilesInDirectory();
                 String content = null;
-                try {
-                    content = FileUtils.fileReader2(curr[index]);
+                try { //3 methods is available - uncomment them
+                    //content = FileUtils.fileReader(curr[index]);
+                    // content = FileUtils.fileReader2(curr[index]);
+                    content = FileUtils.readObject(curr[index]);
+                    //----------------------------------------------------------------------------------------------------------
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -113,6 +142,9 @@ public class CMainPanel extends JPanel {
     }
 
 
+    /**
+     * Control selected item and disSelected
+     */
     private class MyCellRenderer extends DefaultListCellRenderer {
 
         @Override
